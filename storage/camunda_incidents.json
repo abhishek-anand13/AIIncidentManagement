@@ -1,0 +1,613 @@
+[
+    {
+        "incident_id": "INC001",
+        "title": "Database Connection Timeout",
+        "description": "Users cannot access the application after deployment because of database connection timeout.",
+        "priority": "High",
+        "status": "AI_COMPLETED",
+        "ai_response": {
+            "incident": {
+                "title": "Database Connection Timeout",
+                "description": "Users cannot access the application after deployment because of database connection timeout.",
+                "priority": "High"
+            },
+            "knowledge": {
+                "found": true,
+                "confidence": "HIGH",
+                "retrieved_chunks": [
+                    {
+                        "category": "known_issues",
+                        "section": "Description",
+                        "source": "database_pool_limit.md",
+                        "content": "The application repeatedly hit the configured database connection pool limit during peak traffic, causing connection contention and request timeouts.",
+                        "distance": 0.7118579149246216
+                    },
+                    {
+                        "category": "runbooks",
+                        "section": "Resolution Steps",
+                        "source": "database_timeout.md",
+                        "content": "1. Confirm the scope of the timeout incident using monitoring dashboards and alert history\n2. Review database connection pool utilization, active sessions, and blocked queries\n3. Identify slow-running or locking queries that may be consuming connections\n4. Reduce traffic burst pressure temporarily if connection saturation is severe\n5. Increase connection pool capacity if supported by the platform and operationally safe\n6. Optimize or terminate the affected queries and verify database responsiveness\n7. Restart the affected application service only if the issue persists after query remediation\n8. Monitor latency, error rates, and database health until service stability is restored",
+                        "distance": 0.7914559841156006
+                    },
+                    {
+                        "category": "historical_incidents",
+                        "section": "Root Cause",
+                        "source": "INC001_database_timeout.md",
+                        "content": "The database connection pool was exhausted by a sudden increase in concurrent traffic. A small number of slow-running queries held connections longer than expected, preventing new requests from acquiring a connection and causing repeated timeouts.",
+                        "distance": 0.9104392528533936
+                    },
+                    {
+                        "category": "runbooks",
+                        "section": "Verification",
+                        "source": "database_timeout.md",
+                        "content": "Confirm the incident is resolved by verifying that application requests complete successfully, database latency returns to baseline, and no new timeout alerts are generated.",
+                        "distance": 0.9232041835784912
+                    }
+                ]
+            },
+            "diagnosis": {
+                "summary": "Database Connection Timeout",
+                "probable_root_cause": "database connection pool limit exceeded due to peak traffic",
+                "reasoning": "The incident aligns with the known issue of database connection pool utilization, active sessions, and blocked queries. The historical incident also supports this root cause.",
+                "confidence": "HIGH"
+            },
+            "remediation": {
+                "summary": "Database Connection Timeout Remediation Plan",
+                "recommended_actions": [
+                    {
+                        "action_id": "increase_connection_pool",
+                        "action": "Increase Database Connection Pool Capacity",
+                        "reason": "To prevent connection contention and request timeouts during peak traffic",
+                        "automation_supported": true
+                    },
+                    {
+                        "action_id": "terminate_slow_queries",
+                        "action": "Optimize or Terminate Slow-Running Queries",
+                        "reason": "To reduce the number of connections held by slow-running queries",
+                        "automation_supported": false
+                    },
+                    {
+                        "action_id": "reduce_traffic",
+                        "action": "Reduce Traffic Burst Pressure Temporarily",
+                        "reason": "To alleviate connection saturation and prevent repeated timeouts",
+                        "automation_supported": true
+                    }
+                ],
+                "verification_steps": [
+                    {
+                        "step": "Verify database latency returns to baseline",
+                        "expected_result": "Database latency should be within normal limits"
+                    },
+                    {
+                        "step": "Confirm application requests complete successfully",
+                        "expected_result": "No new timeout alerts are generated"
+                    },
+                    {
+                        "step": "Monitor database health and connection pool utilization",
+                        "expected_result": "Connection pool utilization and active sessions remain stable"
+                    }
+                ],
+                "escalation_required": false,
+                "escalation_reason": ""
+            },
+            "automation_results": [
+                {
+                    "action_id": "increase_connection_pool",
+                    "action": "Increase Database Connection Pool Capacity",
+                    "status": "SUCCESS",
+                    "execution_mode": "SIMULATED",
+                    "message": "Database action executed successfully."
+                },
+                {
+                    "action_id": "terminate_slow_queries",
+                    "action": "Optimize or Terminate Slow-Running Queries",
+                    "status": "SKIPPED",
+                    "execution_mode": "MANUAL",
+                    "message": "Requires human approval."
+                },
+                {
+                    "action_id": "reduce_traffic",
+                    "action": "Reduce Traffic Burst Pressure Temporarily",
+                    "status": "SUCCESS",
+                    "execution_mode": "SIMULATED",
+                    "message": "Database action executed successfully."
+                }
+            ],
+            "verification": {
+                "overall_status": "PARTIALLY_VERIFIED",
+                "successful_actions": 2,
+                "failed_actions": 0,
+                "manual_actions": 1,
+                "recommendation": "Automation completed successfully. Complete the remaining manual actions before closing the incident."
+            },
+            "workflow_status": "COMPLETE_WORKFLOW",
+            "overall_confidence": "HIGH"
+        }
+    },
+    {
+        "incident_id": "INC002",
+        "title": "CPU Usage Spike",
+        "description": "CPU usage reached 99% after new deployment.",
+        "priority": "Critical",
+        "status": "AI_COMPLETED",
+        "ai_response": {
+            "incident": {
+                "title": "CPU Usage Spike",
+                "description": "CPU usage reached 99% after new deployment.",
+                "priority": "Critical"
+            },
+            "knowledge": {
+                "found": true,
+                "confidence": "LOW",
+                "retrieved_chunks": [
+                    {
+                        "category": "runbooks",
+                        "section": "Verification",
+                        "source": "high_cpu.md",
+                        "content": "Confirm the incident is resolved when CPU utilization returns to an acceptable range, application latency normalizes, and no new alerts or throttling events are triggered.",
+                        "distance": 0.9849367737770081
+                    }
+                ]
+            },
+            "diagnosis": {
+                "summary": "CPU usage spike after new deployment",
+                "probable_root_cause": "Resource-intensive component not properly scaled",
+                "reasoning": "High CPU utilization indicates a resource bottleneck, which is consistent with the description of a new deployment. This suggests that the newly deployed component may be consuming excessive resources.",
+                "confidence": "HIGH"
+            },
+            "remediation": {
+                "summary": "CPU Usage Spike Remediation Plan",
+                "recommended_actions": [
+                    {
+                        "action_id": "restart_application",
+                        "action": "Restart Application Service",
+                        "reason": "Refresh database connections to ensure proper scaling",
+                        "automation_supported": true
+                    },
+                    {
+                        "action_id": "increase_connection_pool",
+                        "action": "Increase Database Connection Pool Size",
+                        "reason": "Ensure sufficient resources for the resource-intensive component",
+                        "automation_supported": true
+                    },
+                    {
+                        "action_id": "manual_investigation",
+                        "action": "Manual Investigation to Identify Root Cause",
+                        "reason": "Gather more information about the newly deployed component and its resource usage",
+                        "automation_supported": false
+                    }
+                ],
+                "verification_steps": [
+                    {
+                        "step": "Verify CPU utilization returns to an acceptable range (< 80%)",
+                        "expected_result": "CPU utilization < 80%"
+                    },
+                    {
+                        "step": "Check application latency and ensure it normalizes within the expected range",
+                        "expected_result": "Application latency within expected range"
+                    },
+                    {
+                        "step": "Monitor for new alerts or throttling events to ensure no further issues arise",
+                        "expected_result": "No new alerts or throttling events"
+                    }
+                ],
+                "escalation_required": false,
+                "escalation_reason": ""
+            },
+            "automation_results": [
+                {
+                    "action_id": "restart_application",
+                    "action": "Restart Application Service",
+                    "status": "SUCCESS",
+                    "execution_mode": "SIMULATED",
+                    "message": "Application action executed successfully."
+                },
+                {
+                    "action_id": "increase_connection_pool",
+                    "action": "Increase Database Connection Pool Size",
+                    "status": "SUCCESS",
+                    "execution_mode": "SIMULATED",
+                    "message": "Database action executed successfully."
+                },
+                {
+                    "action_id": "manual_investigation",
+                    "action": "Manual Investigation to Identify Root Cause",
+                    "status": "SKIPPED",
+                    "execution_mode": "MANUAL",
+                    "message": "Requires human approval."
+                }
+            ],
+            "verification": {
+                "overall_status": "PARTIALLY_VERIFIED",
+                "successful_actions": 2,
+                "failed_actions": 0,
+                "manual_actions": 1,
+                "recommendation": "Automation completed successfully. Complete the remaining manual actions before closing the incident."
+            },
+            "workflow_status": "COMPLETE_WORKFLOW",
+            "overall_confidence": "LOW"
+        }
+    },
+    {
+        "incident_id": "INC003",
+        "title": "Disk Space Full",
+        "description": "Root filesystem reached 98% utilization.",
+        "priority": "Critical",
+        "status": "AI_COMPLETED",
+        "ai_response": {
+            "incident": {
+                "title": "Disk Space Full",
+                "description": "Root filesystem reached 98% utilization.",
+                "priority": "Critical"
+            },
+            "knowledge": {
+                "found": true,
+                "confidence": "MEDIUM",
+                "retrieved_chunks": [
+                    {
+                        "category": "historical_incidents",
+                        "section": "Symptoms",
+                        "source": "INC003_disk_space_full.md",
+                        "content": "- Disk utilization reached a critical threshold on the affected host\n- Application log writes and temporary file creation began failing\n- Backup and cleanup tasks were interrupted by storage exhaustion\n- Operators saw service instability and failed maintenance operations\n- Alerts triggered for low free disk space",
+                        "distance": 0.9336700439453125
+                    },
+                    {
+                        "category": "historical_incidents",
+                        "section": "Root Cause",
+                        "source": "INC003_disk_space_full.md",
+                        "content": "The host was not rotating and pruning log files quickly enough, and retention settings allowed disk usage to grow unchecked. Once the storage volume reached capacity, the application could no longer write logs or temporary files and dependent operations began to fail.",
+                        "distance": 0.9923642873764038
+                    }
+                ]
+            },
+            "diagnosis": {
+                "summary": "Root filesystem reached 98% utilization, causing application log writes and temporary file creation to fail",
+                "probable_root_cause": "Log files were not being rotated and pruned quickly enough, allowing disk usage to grow unchecked",
+                "reasoning": "The symptoms described in the incident details match the root cause section of historical incident INC003_disk_space_full.md. The critical threshold for disk utilization was reached, leading to service instability and failed maintenance operations.",
+                "confidence": "HIGH"
+            },
+            "remediation": {
+                "summary": "Remediation Plan for Disk Space Full Incident",
+                "recommended_actions": [
+                    {
+                        "action_id": "manual_investigation",
+                        "action": "Manual Investigation of Log File Retention Settings",
+                        "reason": "Verify log file retention settings to ensure they are not contributing to disk space growth.",
+                        "automation_supported": false
+                    },
+                    {
+                        "action_id": "create_ticket",
+                        "action": "Create Ticket for Log File Pruning and Rotation",
+                        "reason": "Request assistance from the operations team to prune and rotate log files regularly.",
+                        "automation_supported": true
+                    },
+                    {
+                        "action_id": "increase_connection_pool",
+                        "action": "Increase Connection Pool Size for Database Connections",
+                        "reason": "Expand database connection pool size to reduce the load on the disk and prevent future incidents.",
+                        "automation_supported": true
+                    }
+                ],
+                "verification_steps": [
+                    {
+                        "step": "Verify log file retention settings are set to a reasonable value (e.g., 7 days)",
+                        "expected_result": "Log file retention settings should be verified as set to a reasonable value."
+                    },
+                    {
+                        "step": "Check if the operations team has created and applied the ticket for log file pruning and rotation",
+                        "expected_result": "The operations team should have created and applied the ticket for log file pruning and rotation."
+                    },
+                    {
+                        "step": "Verify that the increased connection pool size is in effect and database connections are stable",
+                        "expected_result": "Database connections should be stable and the increased connection pool size should be in effect."
+                    }
+                ],
+                "escalation_required": false,
+                "escalation_reason": ""
+            },
+            "automation_results": [
+                {
+                    "action_id": "manual_investigation",
+                    "action": "Manual Investigation of Log File Retention Settings",
+                    "status": "SKIPPED",
+                    "execution_mode": "MANUAL",
+                    "message": "Requires human approval."
+                },
+                {
+                    "action_id": "create_ticket",
+                    "action": "Create Ticket for Log File Pruning and Rotation",
+                    "status": "SUCCESS",
+                    "execution_mode": "SIMULATED",
+                    "message": "Notification sent successfully."
+                },
+                {
+                    "action_id": "increase_connection_pool",
+                    "action": "Increase Connection Pool Size for Database Connections",
+                    "status": "SUCCESS",
+                    "execution_mode": "SIMULATED",
+                    "message": "Database action executed successfully."
+                }
+            ],
+            "verification": {
+                "overall_status": "PARTIALLY_VERIFIED",
+                "successful_actions": 2,
+                "failed_actions": 0,
+                "manual_actions": 1,
+                "recommendation": "Automation completed successfully. Complete the remaining manual actions before closing the incident."
+            },
+            "workflow_status": "COMPLETE_WORKFLOW",
+            "overall_confidence": "MEDIUM"
+        }
+    },
+    {
+        "incident_id": "INC004",
+        "title": "Memory Leak",
+        "description": "Application memory consumption keeps increasing after deployment.",
+        "priority": "Medium",
+        "status": "AI_COMPLETED",
+        "ai_response": {
+            "incident": {
+                "title": "Memory Leak",
+                "description": "Application memory consumption keeps increasing after deployment.",
+                "priority": "Medium"
+            },
+            "knowledge": {
+                "found": true,
+                "confidence": "MEDIUM",
+                "retrieved_chunks": [
+                    {
+                        "category": "historical_incidents",
+                        "section": "Keywords",
+                        "source": "INC007_memory_leak.md",
+                        "content": "memory leak, out of memory, garbage collection, object retention, service restart, heap growth, performance tuning, application stability",
+                        "distance": 0.8378301858901978
+                    },
+                    {
+                        "category": "historical_incidents",
+                        "section": "Symptoms",
+                        "source": "INC007_memory_leak.md",
+                        "content": "- Memory consumption climbed steadily over several hours\n- The service became unstable and restarted repeatedly\n- Out-of-memory alerts triggered before recovery\n- Performance gradually degraded as memory pressure increased\n- Operators saw elevated restart activity and reduced capacity",
+                        "distance": 0.864443302154541
+                    },
+                    {
+                        "category": "historical_incidents",
+                        "section": "Resolution",
+                        "source": "INC007_memory_leak.md",
+                        "content": "1. Restarted the affected service to restore stability\n2. Fixed the memory retention issue in the component\n3. Released and redeployed the patched service\n4. Verified memory usage remained within expected limits",
+                        "distance": 0.9120137691497803
+                    },
+                    {
+                        "category": "historical_incidents",
+                        "section": "Lessons Learned",
+                        "source": "INC007_memory_leak.md",
+                        "content": "- Long-running services should be profiled for memory growth patterns\n- Memory leaks should be detected in pre-production and staging environments\n- Restart behavior and memory thresholds should be monitored closely in production",
+                        "distance": 0.9597244262695312
+                    }
+                ]
+            },
+            "diagnosis": {
+                "summary": "Application memory consumption increased steadily, leading to service instability and repeated restarts.",
+                "probable_root_cause": "Memory leak due to object retention",
+                "reasoning": "The incident aligns with historical knowledge of memory leaks causing out-of-memory alerts, performance degradation, and unstable service behavior. The symptoms described match the documented issues, and restarting the affected service restored stability, suggesting that addressing memory retention was key.",
+                "confidence": "HIGH"
+            },
+            "remediation": {
+                "summary": "Memory Leak Remediation Plan",
+                "recommended_actions": [
+                    {
+                        "action_id": "manual_investigation",
+                        "action": "Manual Investigation of Memory Leaks",
+                        "reason": "Detect and identify the root cause of memory leaks in the application",
+                        "automation_supported": false
+                    },
+                    {
+                        "action_id": "increase_connection_pool",
+                        "action": "Increase Connection Pool Size",
+                        "reason": "Prevent out-of-memory alerts by increasing available connections",
+                        "automation_supported": true
+                    },
+                    {
+                        "action_id": "terminate_slow_queries",
+                        "action": "Terminate Slow Queries",
+                        "reason": "Reduce memory pressure by terminating slow-running queries",
+                        "automation_supported": true
+                    }
+                ],
+                "verification_steps": [
+                    {
+                        "step": "Verify application stability after manual investigation and recommended actions",
+                        "expected_result": "Application is stable and no longer experiencing memory leaks"
+                    },
+                    {
+                        "step": "Monitor connection pool size to ensure it remains within expected limits",
+                        "expected_result": "Connection pool size is above the threshold of 100 connections"
+                    },
+                    {
+                        "step": "Verify termination of slow queries and reduced memory pressure",
+                        "expected_result": "Slow query execution time has decreased by at least 30%"
+                    }
+                ],
+                "escalation_required": false,
+                "escalation_reason": "No further action required, remediation plan is in place"
+            },
+            "automation_results": [
+                {
+                    "action_id": "manual_investigation",
+                    "action": "Manual Investigation of Memory Leaks",
+                    "status": "SKIPPED",
+                    "execution_mode": "MANUAL",
+                    "message": "Requires human approval."
+                },
+                {
+                    "action_id": "increase_connection_pool",
+                    "action": "Increase Connection Pool Size",
+                    "status": "SUCCESS",
+                    "execution_mode": "SIMULATED",
+                    "message": "Database action executed successfully."
+                },
+                {
+                    "action_id": "terminate_slow_queries",
+                    "action": "Terminate Slow Queries",
+                    "status": "SUCCESS",
+                    "execution_mode": "SIMULATED",
+                    "message": "Database action executed successfully."
+                }
+            ],
+            "verification": {
+                "overall_status": "PARTIALLY_VERIFIED",
+                "successful_actions": 2,
+                "failed_actions": 0,
+                "manual_actions": 1,
+                "recommendation": "Automation completed successfully. Complete the remaining manual actions before closing the incident."
+            },
+            "workflow_status": "COMPLETE_WORKFLOW",
+            "overall_confidence": "MEDIUM"
+        }
+    },
+    {
+        "incident_id": "INC777",
+        "title": "Memory Leak",
+        "description": "Application memory consumption keeps increasing after deployment.",
+        "priority": "Medium",
+        "status": "AI_COMPLETED",
+        "ai_response": {
+            "incident": {
+                "title": "Memory Leak",
+                "description": "Application memory consumption keeps increasing after deployment.",
+                "priority": "Medium"
+            },
+            "knowledge": {
+                "found": true,
+                "confidence": "MEDIUM",
+                "retrieved_chunks": [
+                    {
+                        "category": "historical_incidents",
+                        "section": "Keywords",
+                        "source": "INC007_memory_leak.md",
+                        "content": "memory leak, out of memory, garbage collection, object retention, service restart, heap growth, performance tuning, application stability",
+                        "distance": 0.8378301858901978
+                    },
+                    {
+                        "category": "historical_incidents",
+                        "section": "Symptoms",
+                        "source": "INC007_memory_leak.md",
+                        "content": "- Memory consumption climbed steadily over several hours\n- The service became unstable and restarted repeatedly\n- Out-of-memory alerts triggered before recovery\n- Performance gradually degraded as memory pressure increased\n- Operators saw elevated restart activity and reduced capacity",
+                        "distance": 0.864443302154541
+                    },
+                    {
+                        "category": "historical_incidents",
+                        "section": "Resolution",
+                        "source": "INC007_memory_leak.md",
+                        "content": "1. Restarted the affected service to restore stability\n2. Fixed the memory retention issue in the component\n3. Released and redeployed the patched service\n4. Verified memory usage remained within expected limits",
+                        "distance": 0.9120137691497803
+                    },
+                    {
+                        "category": "historical_incidents",
+                        "section": "Lessons Learned",
+                        "source": "INC007_memory_leak.md",
+                        "content": "- Long-running services should be profiled for memory growth patterns\n- Memory leaks should be detected in pre-production and staging environments\n- Restart behavior and memory thresholds should be monitored closely in production",
+                        "distance": 0.9597244262695312
+                    }
+                ]
+            },
+            "diagnosis": {
+                "summary": "Memory Leak Incident",
+                "probable_root_cause": "Object Retention and Memory Leaks",
+                "reasoning": "The symptoms match historical incidents with memory leak, object retention, and heap growth. Restarting the service restored stability, suggesting that the issue was related to memory pressure.",
+                "confidence": "MEDIUM"
+            },
+            "remediation": {
+                "summary": "Memory Leak Remediation Plan",
+                "recommended_actions": [
+                    {
+                        "action_id": "manual_investigation",
+                        "action": "Manual Investigation of Memory Leaks",
+                        "reason": "Detect and identify the root cause of memory leaks in the application",
+                        "automation_supported": false
+                    },
+                    {
+                        "action_id": "increase_connection_pool",
+                        "action": "Increase Connection Pool Size",
+                        "reason": "Prevent memory exhaustion by increasing the number of available connections",
+                        "automation_supported": true
+                    },
+                    {
+                        "action_id": "terminate_slow_queries",
+                        "action": "Terminate Slow Queries",
+                        "reason": "Reduce memory usage by terminating slow-running queries",
+                        "automation_supported": true
+                    }
+                ],
+                "verification_steps": [
+                    {
+                        "step": "Verify memory usage after increasing connection pool size",
+                        "expected_result": "Memory usage should decrease and remain within expected limits"
+                    },
+                    {
+                        "step": "Monitor system logs for slow query termination",
+                        "expected_result": "Slow queries should be terminated successfully"
+                    },
+                    {
+                        "step": "Run manual investigation to identify root cause of memory leaks",
+                        "expected_result": "Root cause of memory leaks should be identified and addressed"
+                    }
+                ],
+                "escalation_required": false,
+                "escalation_reason": ""
+            },
+            "automation_results": [
+                {
+                    "action_id": "manual_investigation",
+                    "action": "Manual Investigation of Memory Leaks",
+                    "status": "SKIPPED",
+                    "execution_mode": "MANUAL",
+                    "message": "Requires human approval."
+                },
+                {
+                    "action_id": "increase_connection_pool",
+                    "action": "Increase Connection Pool Size",
+                    "status": "SUCCESS",
+                    "execution_mode": "SIMULATED",
+                    "message": "Database action executed successfully."
+                },
+                {
+                    "action_id": "terminate_slow_queries",
+                    "action": "Terminate Slow Queries",
+                    "status": "SUCCESS",
+                    "execution_mode": "SIMULATED",
+                    "message": "Database action executed successfully."
+                }
+            ],
+            "verification": {
+                "overall_status": "PARTIALLY_VERIFIED",
+                "successful_actions": 2,
+                "failed_actions": 0,
+                "manual_actions": 1,
+                "recommendation": "Automation completed successfully. Complete the remaining manual actions before closing the incident."
+            },
+            "workflow_status": "COMPLETE_WORKFLOW",
+            "overall_confidence": "MEDIUM"
+        }
+    },
+    {
+        "incident_id": "INC005",
+        "title": "API Gateway Timeout",
+        "description": "Gateway returns HTTP 504 during peak traffic.",
+        "priority": "High",
+        "status": "WAITING_FOR_AI"
+    },
+    {
+        "incident_id": "INC006",
+        "title": "Kubernetes Pod CrashLoop",
+        "description": "Backend pod continuously restarts after deployment.",
+        "priority": "Critical",
+        "status": "WAITING_FOR_AI"
+    },
+    {
+        "incident_id": "INC007",
+        "title": "Redis Cache Failure",
+        "description": "Redis cache is unavailable causing slow response times.",
+        "priority": "High",
+        "status": "WAITING_FOR_AI"
+    }
+]

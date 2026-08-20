@@ -1,0 +1,109 @@
+AIIncidentManagement/
+│
+├── app/                  ← Backend source code
+│
+│   ├── api/              ← FastAPI endpoints
+│   ├── agents/           ← AI agents (Orchestrator, Knowledge, etc.)
+│   ├── services/         ← LLM, RAG, Vector DB services
+│   ├── models/           ← Pydantic models
+│   ├── prompts/          ← Prompt templates
+│   ├── utils/            ← Helper functions
+│   └── main.py           ← FastAPI entry point
+│
+├── dashboard/            ← Streamlit frontend
+│
+├── data/
+│   ├── incidents/        ← Stored incidents
+│   ├── knowledge_base/   ← Runbooks & historical incidents
+│   └── logs/             ← Sample log files
+│
+├── storage/              ← ChromaDB vector database
+│
+├── tests/                ← Unit tests
+│
+├── .env                  ← Configuration
+├── requirements.txt
+└── README.md
+
+
+
+
+Why start with the model?
+
+Imagine a user submits:
+
+{
+    "title": "Database Connection Timeout",
+    "description": "Users cannot access the portal after deployment.",
+    "priority": "High"
+}
+
+How does FastAPI know:
+
+title must be a string?
+priority is required?
+description cannot be missing?
+
+It doesn't...
+
+unless we define a Pydantic Model.
+
+
+AI ORCHESTRATOR
+
+What is the AI Orchestrator?
+
+Imagine you're the manager of a hospital.
+
+A patient comes in and says:
+
+"I have chest pain."
+
+Does the manager immediately treat the patient?
+
+❌ No.
+
+The manager decides:
+
+Should I send them to Cardiology?
+Neurology?
+Emergency?
+General Physician?
+
+The manager doesn't solve the problem.
+
+He decides who should solve it.
+
+Our AI Orchestrator is exactly that manager.
+
+
+
+Why I recommend it
+It's built for RAG — MarkdownHeaderTextSplitter preserves the document hierarchy instead of splitting at arbitrary character counts.
+Our documents already use Markdown headings consistently, so we're taking advantage of the structure we've created.
+It scales. If tomorrow you add 500 more documents, the same loader works without changes.
+
+It's interview-friendly. You can honestly say:
+
+"I used LangChain's MarkdownHeaderTextSplitter so the retrieval system indexes logical sections like Symptoms, Root Cause, and Resolution instead of arbitrary chunks."
+
+The final Knowledge Agent flow
+Incident
+      │
+      ▼
+Create Query Embedding
+      │
+      ▼
+Vector Search
+      │
+      ▼
+Top 5 Results
+      │
+      ▼
+Confidence Evaluation
+      │
+      ▼
+Knowledge Context
+      │
+      ▼
+Return to AI Orchestrator
